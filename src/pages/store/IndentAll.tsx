@@ -7,6 +7,7 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { storeApi } from "../../services";
 import { toast } from "sonner";
+import Loading from "./Loading";
 interface IndentRow {
   id?: string;
   timestamp: string;
@@ -123,6 +124,16 @@ export default function IndentAll() {
     }
   };
 
+  if (loading) {
+    return (
+      <Loading
+        heading="All Indents"
+        subtext="Loading indent requests"
+        icon={<ClipboardList size={48} className="text-blue-600" />}
+      />
+    );
+  }
+
   return (
     <div className="w-full p-4 md:p-6 lg:p-8 space-y-6">
       <Heading heading="All Indents" subtext="View all indent requests">
@@ -215,6 +226,5 @@ export default function IndentAll() {
     </div>
   );
 }
-
 
 

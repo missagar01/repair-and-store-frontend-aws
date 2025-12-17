@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { storeApi } from "../../services";
 import { ClipboardList, LayoutDashboard, PackageCheck, Truck, Warehouse, FileText, TrendingUp, BarChart3, Activity } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import Loading from "./Loading";
 
 type DashboardApiResponse = {
   success: boolean;
@@ -191,12 +192,11 @@ export default function StoreDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
-        </div>
-      </div>
+      <Loading
+        heading="Store Dashboard"
+        subtext="Loading dashboard insights"
+        icon={<LayoutDashboard size={48} className="text-blue-600" />}
+      />
     );
   }
 
@@ -229,42 +229,50 @@ export default function StoreDashboard() {
 
       {/* Status Cards (like housekeeping) - Top Section */}
     
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        {cards.map((card) => (
-          <Card key={card.title} className={`bg-gradient-to-br ${card.bg} border-2 ${card.border} shadow-lg hover:shadow-xl transition-all duration-300`}>
-            <CardContent className="space-y-3 p-6">
-              <div className="flex items-center justify-between">
-                <p className="font-semibold text-gray-700 dark:text-gray-300">{card.title}</p>
-                <div className={`p-2 rounded-lg ${card.iconBg}`}>
-                  <div className={card.iconColor}>
-                    {card.icon}
+      <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr] mt-6">
+        <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {cards.map((card) => (
+              <Card
+                key={card.title}
+                className={`rounded-2xl bg-gradient-to-br ${card.bg} border border-slate-200 shadow-lg transition-all duration-300`}
+              >
+                <CardContent className="space-y-3 p-6">
+                  <div className="flex items-center justify-between">
+                    <p className="font-semibold text-slate-800 dark:text-slate-200">
+                      {card.title}
+                    </p>
+                    <div
+                      className={`p-2 rounded-lg border border-white/40 ${card.iconBg}`}
+                    >
+                      <div className={card.iconColor}>{card.icon}</div>
+                    </div>
                   </div>
-                </div>
+                  <p className={`text-4xl font-bold ${card.text}`}>{card.value}</p>
+                  <div className="flex items-center justify-between text-sm pt-2 border-t border-white/60">
+                    <p className="text-slate-700 dark:text-slate-200">{card.sublabel}</p>
+                    <p className={`font-semibold ${card.text}`}>{card.subvalue}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <Card className="rounded-3xl border border-slate-200 bg-white shadow-lg">
+          <CardHeader className="bg-white/80 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-lg bg-blue-100">
+                <BarChart3 className="text-blue-600" size={20} />
               </div>
-              <p className={`text-4xl font-bold ${card.text}`}>{card.value}</p>
-              <div className="flex items-center justify-between text-sm pt-2 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-gray-600 dark:text-gray-400">{card.sublabel}</p>
-                <p className={`font-semibold ${card.text}`}>{card.subvalue}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      {/* Overall Progress Section with Donut Chart */}
-      <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-        <Card className="bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900">
-                <BarChart3 className="text-blue-600 dark:text-blue-400" size={24} />
-              </div>
-              <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-200">Overall Progress</CardTitle>
+              <CardTitle className="text-lg font-semibold text-slate-900">
+                Overall Progress
+              </CardTitle>
             </div>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="flex items-center justify-center">
-              <div className="relative w-48 h-48">
-                {/* Donut Chart */}
+            <div className="flex flex-col gap-6 md:flex-row md:items-center">
+              <div className="relative w-48 h-48 mx-auto md:mx-0">
                 <svg className="transform -rotate-90 w-48 h-48">
                   <circle
                     cx="96"
@@ -273,9 +281,8 @@ export default function StoreDashboard() {
                     stroke="currentColor"
                     strokeWidth="16"
                     fill="none"
-                    className="text-gray-200 dark:text-gray-700"
+                    className="text-slate-200"
                   />
-                  {/* Completed */}
                   <circle
                     cx="96"
                     cy="96"
@@ -286,7 +293,6 @@ export default function StoreDashboard() {
                     strokeDasharray={`${(dashboardData?.completedPercent || 0) * 5.026} 502.6`}
                     className="text-green-500"
                   />
-                  {/* Pending */}
                   <circle
                     cx="96"
                     cy="96"
@@ -298,7 +304,6 @@ export default function StoreDashboard() {
                     strokeDashoffset={`-${(dashboardData?.completedPercent || 0) * 5.026}`}
                     className="text-orange-500"
                   />
-                  {/* Upcoming */}
                   <circle
                     cx="96"
                     cy="96"
@@ -308,9 +313,8 @@ export default function StoreDashboard() {
                     fill="none"
                     strokeDasharray={`${(dashboardData?.upcomingPercent || 0) * 5.026} 502.6`}
                     strokeDashoffset={`-${((dashboardData?.completedPercent || 0) + (dashboardData?.pendingPercent || 0)) * 5.026}`}
-                    className="text-gray-500"
+                    className="text-gray-400"
                   />
-                  {/* Overdue */}
                   <circle
                     cx="96"
                     cy="96"
@@ -320,90 +324,52 @@ export default function StoreDashboard() {
                     fill="none"
                     strokeDasharray={`${(dashboardData?.overduePercent || 0) * 5.026} 502.6`}
                     strokeDashoffset={`-${((dashboardData?.completedPercent || 0) + (dashboardData?.pendingPercent || 0) + (dashboardData?.upcomingPercent || 0)) * 5.026}`}
-                    className="text-red-500"
+                    className="text-rose-500"
                   />
                 </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <p className="text-3xl font-bold text-gray-800 dark:text-gray-200">
-                      {dashboardData?.overallProgress?.toFixed(1) ?? 0}%
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Overall</p>
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <p className="text-3xl font-bold text-slate-900">
+                    {dashboardData?.overallProgress?.toFixed(1) ?? 0}%
+                  </p>
+                  <p className="text-sm text-slate-500">Overall</p>
+                </div>
+              </div>
+              <div className="space-y-3 flex-1">
+                {[
+                  {
+                    label: "Total Indents",
+                    color: "bg-indigo-500",
+                    value: dashboardData?.totalIndents ?? 0,
+                  },
+                  {
+                    label: "Total Purchases",
+                    color: "bg-emerald-500",
+                    value: dashboardData?.totalPurchaseOrders ?? 0,
+                  },
+                  {
+                    label: "Total Issued",
+                    color: "bg-amber-500",
+                    value: dashboardData?.totalIssuedQuantity ?? 0,
+                  },
+                  {
+                    label: "Out of Stock",
+                    color: "bg-rose-500",
+                    value: dashboardData?.outOfStockCount ?? 0,
+                  },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className={`inline-flex w-3 h-3 rounded-full ${item.color}`}></span>
+                      <span className="text-sm font-medium text-slate-600">{item.label}</span>
+                    </div>
+                    <span className="text-sm font-semibold text-slate-900">
+                      {typeof item.value === "number"
+                        ? item.value.toLocaleString("en-IN")
+                        : item.value ?? "—"}
+                    </span>
                   </div>
-                </div>
+                ))}
               </div>
-            </div>
-            {/* Legend */}
-            <div className="mt-6 space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-green-500"></div>
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Completed</span>
-                </div>
-                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  {dashboardData?.completedPercent?.toFixed(1) ?? 0}%
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-orange-500"></div>
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Pending</span>
-                </div>
-                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  {dashboardData?.pendingPercent?.toFixed(1) ?? 0}%
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-gray-500"></div>
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Upcoming</span>
-                </div>
-                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  {dashboardData?.upcomingPercent?.toFixed(1) ?? 0}%
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full bg-red-500"></div>
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Overdue</span>
-                </div>
-                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                  {dashboardData?.overduePercent?.toFixed(1) ?? 0}%
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Additional Metrics Card */}
-        <Card className="bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950 dark:to-teal-950 border-b border-gray-200 dark:border-gray-700">
-            <CardTitle className="text-lg font-bold text-gray-800 dark:text-gray-200">Additional Metrics</CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Total Purchases</span>
-              <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-                {dashboardData?.totalPurchaseOrders?.toLocaleString() ?? 0}
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Purchased Quantity</span>
-              <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-                {dashboardData?.totalPurchasedQuantity?.toLocaleString() ?? 0}
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Total Issued</span>
-              <span className="text-lg font-bold text-amber-600 dark:text-amber-400">
-                {dashboardData?.totalIssuedQuantity?.toLocaleString() ?? 0}
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Out of Stock</span>
-              <span className="text-lg font-bold text-rose-600 dark:text-rose-400">
-                {dashboardData?.outOfStockCount?.toLocaleString() ?? 0}
-              </span>
             </div>
           </CardContent>
         </Card>
@@ -567,4 +533,3 @@ export default function StoreDashboard() {
     </div>
   );
 }
-

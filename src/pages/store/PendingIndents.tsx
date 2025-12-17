@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../components/ui/ta
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { storeApi } from "../../services";
+import Loading from "./Loading";
 
 interface POData {
   PLANNED_TIMESTAMP: string;
@@ -245,6 +246,16 @@ export default function PendingIndents() {
     historyStartIndex,
     historyStartIndex + PAGE_SIZE
   );
+
+  if (loading) {
+    return (
+      <Loading
+        heading="Purchase Orders"
+        subtext="Loading pending and received purchase orders"
+        icon={<ListTodo size={48} className="text-blue-600" />}
+      />
+    );
+  }
 
   return (
     <div className="w-full p-4 md:p-6 lg:p-8">

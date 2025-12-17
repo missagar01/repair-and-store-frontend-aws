@@ -6,6 +6,7 @@ import Heading from "../../components/element/Heading";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { storeApi } from "../../services";
+import Loading from "./Loading";
 
 // Custom style to show calendar picker icon
 const dateInputStyle = `
@@ -220,6 +221,16 @@ export default function Inventory() {
   const currentPage = Math.min(page, totalPages);
   const startIndex = (currentPage - 1) * PAGE_SIZE;
   const pagedRows = filteredRows.slice(startIndex, startIndex + PAGE_SIZE);
+
+  if (loading && allRows.length === 0) {
+    return (
+      <Loading
+        heading="Inventory"
+        subtext="Fetching inventory data"
+        icon={<Store size={48} className="text-blue-600" />}
+      />
+    );
+  }
 
   return (
     <div className="space-y-4 p-4 md:p-6 lg:p-8">

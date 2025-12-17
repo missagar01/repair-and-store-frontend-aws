@@ -80,6 +80,7 @@ const AppSidebar: React.FC = () => {
   const isAdmin = (user?.role || "").toLowerCase() === "admin";
   const isStoreOutOnly = employeeId === "S07632" || employeeId === "S08088";
   const isApproveIndentOnly = employeeId === "S00116";
+  const hideUserProfileSection = location.pathname === "/store/dashboard";
 
   const storeMenuItems = useMemo(
     () => {
@@ -177,32 +178,34 @@ const AppSidebar: React.FC = () => {
 
 
             {/* User Profile */}
-            <div>
-              <Link
-                to="/profile"
-                className={`menu-item group ${
-                  isActive("/profile") ? "menu-item-active" : "menu-item-inactive"
-                }`}
-              >
-                <span
-                  className={`menu-item-icon-size ${
-                    isActive("/profile")
-                      ? "menu-item-icon-active"
-                      : "menu-item-icon-inactive"
+            {!hideUserProfileSection && (
+              <div>
+                <Link
+                  to="/profile"
+                  className={`menu-item group ${
+                    isActive("/profile") ? "menu-item-active" : "menu-item-inactive"
                   }`}
                 >
-                  <UserCircleIcon />
-                </span>
-                {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className="menu-item-text">User Profile</span>
-                )}
-              </Link>
-            </div>
+                  <span
+                    className={`menu-item-icon-size ${
+                      isActive("/profile")
+                        ? "menu-item-icon-active"
+                        : "menu-item-icon-inactive"
+                    }`}
+                  >
+                    <UserCircleIcon />
+                  </span>
+                  {(isExpanded || isHovered || isMobileOpen) && (
+                    <span className="menu-item-text">User Profile</span>
+                  )}
+                </Link>
+              </div>
+            )}
           </div>
         </nav>
         
         {/* User Info and Logout Button */}
-        {(isExpanded || isHovered || isMobileOpen) && (
+        {(isExpanded || isHovered || isMobileOpen) && !hideUserProfileSection && (
           <div className="mt-auto border-t border-indigo-200/50 dark:border-indigo-800/50 pt-4 pb-4">
             <div className="px-4 mb-3">
               <div className="flex items-center gap-3 mb-2">
@@ -230,6 +233,22 @@ const AppSidebar: React.FC = () => {
             >
               <LogOut className="w-5 h-5" />
               <span className="font-medium">Logout</span>
+            </button>
+          </div>
+        )}
+
+        {/* Compact logout for dashboard view */}
+        {hideUserProfileSection && (
+          <div className="mt-auto border-t border-indigo-200/50 dark:border-indigo-800/50 pt-4 pb-4">
+            <button
+              onClick={async () => {
+                await logout();
+                navigate("/login");
+              }}
+              className="w-full flex items-center gap-3 justify-center text-indigo-700 hover:bg-indigo-100 hover:text-indigo-900 dark:text-indigo-300 dark:hover:bg-indigo-900/30 rounded-lg transition-all duration-200 font-medium"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="text-sm font-medium">Logout</span>
             </button>
           </div>
         )}
