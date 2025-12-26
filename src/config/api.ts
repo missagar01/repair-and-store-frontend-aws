@@ -1,6 +1,7 @@
 const envApi = import.meta.env.VITE_API_URL;
+const DEFAULT_API = "https://store-repair.sagartmt.com/api";
 
-const finalApiUrl = envApi;
+const finalApiUrl = envApi || DEFAULT_API;
 
 const rawApi = (finalApiUrl || "").trim();
 const isBrowser = typeof window !== "undefined";

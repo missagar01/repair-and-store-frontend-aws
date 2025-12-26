@@ -1,7 +1,7 @@
 // Store System API Services
 import { apiRequest, API_BASE_URL } from "../config/api";
 
-const PO_BASE_URL = "http://localhost:3004/api/po";
+const PO_BASE_URL = "https://store-repair.sagartmt.com/api/po";
 
 function buildAuthHeaders() {
   const token = localStorage.getItem("token");
